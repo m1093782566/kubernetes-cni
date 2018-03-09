@@ -1,0 +1,70 @@
+syntax = 'proto3';
+
+// use other package for generate
+package runtime.v1alpha1;
+
+service CNIService {
+    // SupportVersion to check version support or not
+    // return true or false
+    rpc SupportVersion(SupportVersionRequest) returns (SupportVersionResponse){}
+
+    // Status to check cniDriver status, config synced/plugin capabilities
+    rpc Status(StatusRequest) returns (StatusResponse) {}
+
+    rpc SetUpPod(SetUpPodRequest) returns (SetUpPodResponse) {}
+
+    rpc TearDownPod(TearDownPodRequest) returns (TearDownPodResponse) {}
+}
+
+message SupportVersionRequest {
+    string Version = 1;
+}
+
+message SupportVersionResponse {
+    bool Support = 1;
+}
+
+message StatusRequest {
+}
+
+message StatusResponse {
+    bool Syncde = 1;
+    map<string, Empty> Capabilitiies = 2;
+}
+
+message SetUpPodRequest {
+    PodRuntimeInfo RuntimeInfo = 1;
+}
+
+message SetUpPodResponse {
+}
+
+message TearDownPodRequest {
+    PodRuntimeInfo RuntimeInfo = 1;
+}
+
+message TearDownPodResponse {
+}
+
+message PodRuntimeInfo {
+    string Name = 1;
+    string Namespace = 2;
+    string NetnsPath = 3;
+    string RuntimeType = 4;
+    repeated PortMapping PortMap = 6;
+    string ContainerID = 5;
+}
+
+message PortMapping {
+    // Protocol of the port mapping.
+    string protocol = 1;
+    // Port number within the container. Default: 0 (not specified).
+    int32 container_port = 2;
+    // Port number on the host. Default: 0 (not specified).
+    int32 host_port = 3;
+    // Host IP.
+    string host_ip = 4;
+}
+
+enum Empty {
+}
